@@ -17,7 +17,7 @@ function App() {
       <div className="flex flex-col h-screen">
         <Header />
         <Routes>
-          <Route path="/" element={<Navigate to="/meteogram" replace />} />
+          <Route path="/" element={<MeteogramPage />} />{" "}
           <Route path="/meteogram" element={<MeteogramPage />} />
           <Route path="/comparison" element={<ComparisonPage />} />
           <Route path="/news" element={<WeatherNews />} />
