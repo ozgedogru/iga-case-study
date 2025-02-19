@@ -24,7 +24,7 @@ const TemperatureComparison = () => {
             setIsLoading(false);
           },
           error: (err) => {
-            console.error("CSV parse hatası:", err);
+            console.error("CSV parse error:", err);
             setIsLoading(false);
           },
         });
@@ -37,7 +37,11 @@ const TemperatureComparison = () => {
   }, []);
 
   if (isLoading) {
-    return <h1>Veri Yükleniyor...</h1>;
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   const era5Temps = data.map((row) => parseFloat(row["ERA5 Temperature (°C)"]));

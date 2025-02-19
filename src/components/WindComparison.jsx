@@ -24,12 +24,12 @@ const WindComparison = () => {
             setIsLoading(false);
           },
           error: (err) => {
-            console.error("CSV parse hatası:", err);
+            console.error("CSV parse error:", err);
             setIsLoading(false);
           },
         });
       } catch (error) {
-        console.error("CSV dosyasını alırken hata oluştu:", error);
+        console.error("Error fetching data:", error);
         setIsLoading(false);
       }
     };
@@ -37,7 +37,11 @@ const WindComparison = () => {
   }, []);
 
   if (isLoading) {
-    return <h1>Veri Yükleniyor...</h1>;
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   const era5WindSpeed = data.map((row) =>

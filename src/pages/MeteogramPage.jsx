@@ -8,6 +8,7 @@ const MeteogramPage = () => {
   const [era5Data, setEra5Data] = useState([]);
   const [metarData, setMetarData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [showTempInfo, setShowTempInfo] = useState(false);
   const [showPrecipitationInfo, setShowPrecipitationInfo] = useState(false);
@@ -47,8 +48,10 @@ const MeteogramPage = () => {
         setEra5Data(era5Json);
         setMetarData(metarJson);
         setSelectedData(era5Json);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -58,6 +61,14 @@ const MeteogramPage = () => {
   useEffect(() => {
     setSelectedData(useERA5 ? era5Data : metarData);
   }, [useERA5, era5Data, metarData]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!selectedData || selectedData.length === 0) {
     return (
