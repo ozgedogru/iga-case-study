@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 import Plot from "react-plotly.js";
 
-const TemperatureComparison = () => {
+const HumidityComparison = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [rmse, setRmse] = useState(null);
@@ -42,16 +42,18 @@ const TemperatureComparison = () => {
   }, []);
 
   const calculateErrorMetrics = (data) => {
-    const era5Temps = data.map((row) =>
-      parseFloat(row["ERA5 Temperature (°C)"])
+    const era5Humidity = data.map((row) =>
+      parseFloat(row["ERA5 Relative Humidity (%)"])
     );
-    const metarTemps = data.map((row) =>
-      parseFloat(row["METAR Temperature (°C)"])
+    const metarHumidity = data.map((row) =>
+      parseFloat(row["METAR Relative Humidity (%)"])
     );
 
-    const n = era5Temps.length;
-    const squaredErrors = era5Temps.map((e, i) => (e - metarTemps[i]) ** 2);
-    const biases = era5Temps.map((e, i) => e - metarTemps[i]);
+    const n = era5Humidity.length;
+    const squaredErrors = era5Humidity.map(
+      (e, i) => (e - metarHumidity[i]) ** 2
+    );
+    const biases = era5Humidity.map((e, i) => e - metarHumidity[i]);
 
     setRmse(Math.sqrt(squaredErrors.reduce((a, b) => a + b, 0) / n).toFixed(2));
     setBias((biases.reduce((a, b) => a + b, 0) / n).toFixed(2));
@@ -65,15 +67,17 @@ const TemperatureComparison = () => {
     );
   }
 
-  const era5Temps = data.map((row) => parseFloat(row["ERA5 Temperature (°C)"]));
-  const metarTemps = data.map((row) =>
-    parseFloat(row["METAR Temperature (°C)"])
+  const era5Humidity = data.map((row) =>
+    parseFloat(row["ERA5 Relative Humidity (%)"])
+  );
+  const metarHumidity = data.map((row) =>
+    parseFloat(row["METAR Relative Humidity (%)"])
   );
 
   return (
     <div className="relative bg-white p-3 sm:p-4 shadow-lg rounded-lg w-full max-w-full min-w-0 min-h-[200px]">
       <h3 className="text-sm sm:text-lg font-semibold text-gray-800 text-center pt-4 mb-2">
-        Temperature Comparison
+        Relative Humidity Comparison
       </h3>
 
       <div className="w-full overflow-x-auto">
@@ -81,33 +85,39 @@ const TemperatureComparison = () => {
           data={[
             {
               x: Array.from({ length: data.length }, (_, i) => i + 1),
-              y: era5Temps,
+              y: era5Humidity,
               type: "scatter",
               mode: "lines+markers",
-              name: "ERA5 Temperature (°C)",
+              name: "ERA5 Relative Humidity (%)",
               marker: { color: "#509AD1" },
-              line: { color: "#509AD1" },
-              hovertemplate: "ERA5 Temp: %{y}°C<extra></extra>",
+              hovertemplate: "ERA5 Humidity: %{y}%<extra></extra>",
             },
             {
               x: Array.from({ length: data.length }, (_, i) => i + 1),
-              y: metarTemps,
+              y: metarHumidity,
               type: "scatter",
               mode: "lines+markers",
-              name: "METAR Temperature (°C)",
+              name: "METAR Relative Humidity (%)",
               marker: { color: "#CC0000" },
-              line: { color: "#CC0000" },
-              hovertemplate: "METAR Temp: %{y}°C<extra></extra>",
+              hovertemplate: "METAR Humidity: %{y}%<extra></extra>",
             },
           ]}
           layout={{
-            title: "ERA5 vs METAR Temperature Comparison",
+            title: "ERA5 vs METAR Relative Humidity Comparison",
             xaxis: { title: "Time / Index" },
-            yaxis: { title: "Temperature (°C)", showgrid: false },
+            yaxis: {
+              title: "Relative Humidity (%)",
+              showgrid: false,
+            },
             autosize: true,
             responsive: true,
             height: window.innerWidth < 640 ? 250 : 300,
-            legend: { x: 1.2, y: 1.2, xanchor: "right", yanchor: "top" },
+            legend: {
+              x: 1.2,
+              y: 1,
+              xanchor: "right",
+              yanchor: "top",
+            },
             margin: { l: 50, r: 80, t: 30, b: 40 },
           }}
           className="w-full"
@@ -120,7 +130,7 @@ const TemperatureComparison = () => {
             🛑 RMSE
           </p>
           <p className="text-xs sm:text-sm font-semibold text-red-600">
-            {rmse}°C
+            {rmse}%
           </p>
           <div className="absolute hidden group-hover:flex items-center justify-center bg-black text-white text-[10px] sm:text-xs rounded-md p-2 top-[-40px] left-1/2 transform -translate-x-1/2 w-auto max-w-[160px] shadow-lg z-50">
             Measures the average error magnitude; higher RMSE indicates greater
@@ -132,7 +142,7 @@ const TemperatureComparison = () => {
             ↔ Bias
           </p>
           <p className="text-xs sm:text-sm font-semibold text-green-600">
-            {bias}°C
+            {bias}%
           </p>
           <div className="absolute hidden group-hover:flex items-center justify-center bg-black text-white text-[10px] sm:text-xs rounded-md p-2 top-[-40px] left-1/2 transform -translate-x-1/2 w-auto max-w-[160px] shadow-lg z-50">
             Shows the systematic deviation of model predictions; positive bias
@@ -140,18 +150,19 @@ const TemperatureComparison = () => {
           </div>
         </div>
       </div>
+
       <div className="mt-2 p-4 bg-gray-100 rounded-lg shadow max-w-full">
         <p className="text-sm text-gray-700 mt-2">
-          The ERA5 model generally follows the temperature variations observed
-          in METAR data; however, it tends to overestimate temperatures slightly
-          (Bias: +0.90°C). There is a small but operationally significant
-          deviation between the model and actual observations. While the model
-          accurately captures long-term temperature trends, it is susceptible to
-          errors in local-scale and sudden temperature changes.
+          The ERA5 model provides a smoothed representation of relative
+          humidity, whereas METAR data captures more localized fluctuations. The
+          RMSE value is 7.85%, indicating a noticeable difference between the
+          model and actual observations. Differences are observed at certain
+          hours, indicating that ERA5 may not fully represent short-term
+          humidity variations.
         </p>
       </div>
     </div>
   );
 };
 
-export default TemperatureComparison;
+export default HumidityComparison;
