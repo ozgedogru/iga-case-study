@@ -101,6 +101,7 @@ const MeteogramPage = () => {
     mode: "lines",
     name: "Temperature (°C)",
     line: { color: "#D93232", width: 2 },
+    hovertemplate: "Temperature: %{y:.2f}°C<extra></extra>",
   };
 
   const dewPointTrace = {
@@ -110,6 +111,7 @@ const MeteogramPage = () => {
     mode: "lines",
     name: "Dew Point (°C)",
     line: { color: "#467EAC", width: 2 },
+    hovertemplate: "Dew Point: %{y:.2f}°C<extra></extra>",
   };
 
   const pressureTrace = {
@@ -120,6 +122,7 @@ const MeteogramPage = () => {
     name: "Pressure (hPa)",
     line: { color: "#3D8241", width: 2 },
     yaxis: "y2",
+    hovertemplate: "Pressure: %{y:.2f} hPa<extra></extra>",
   };
 
   const precipitationTrace = {
@@ -128,6 +131,7 @@ const MeteogramPage = () => {
     type: "bar",
     name: "Precipitation (mm)",
     marker: { color: "#2A90BD", opacity: 0.7 },
+    hovertemplate: "Precipitation: %{y:.2f} mm<extra></extra>",
   };
 
   const weatherIcons = {
@@ -181,6 +185,7 @@ const MeteogramPage = () => {
       width: 1,
       opacity: 0.8,
     },
+    hovertemplate: "Wind Speed: %{y:.2f} kt<br><extra></extra>",
   };
 
   const getArrowIcon = (angle) => {
@@ -251,45 +256,85 @@ const MeteogramPage = () => {
             />
             <button
               onClick={() => setShowTempInfo(!showTempInfo)}
-              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-2 mt-2 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
             >
               {showTempInfo ? "Show Less Information" : "Show More Information"}
             </button>
 
             <div
               className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                showTempInfo ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                showTempInfo
+                  ? "max-h-[1000px] opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
             >
-              <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+              <div className="text-start text-sm text-gray-600 mt-2 leading-relaxed">
                 {useERA5 ? (
                   <>
-                    The temperature remains below freezing throughout the day,
-                    ranging from -4°C to -1°C, indicating a high risk of{" "}
-                    <span className="text-red-700">icing</span>. The dew point
-                    temperature fluctuates between -2°C and -6°C, suggesting
-                    high humidity levels at certain times. The atmospheric
-                    pressure gradually decreases from 1022 hPa to 1019 hPa,
-                    indicating weak low-pressure influence. Given the freezing
-                    temperatures, de-icing and anti-icing procedures might be
-                    necessary for safe flight operations.
+                    <p>
+                      {" "}
+                      The temperature and dew point difference (T-Td) decreases
+                      in the morning hours (~06:00) and drops to around -5°C.
+                      This indicates that as the air becomes saturated, the risk
+                      of condensation increases, which may lead to cloud
+                      formation or fog. However, since the wind speed is around
+                      15-16 kt at this time, condensation is more likely to form
+                      low-level stratus clouds rather than fog.{" "}
+                    </p>{" "}
+                    <p>
+                      {" "}
+                      The pressure value decreases from 1023 hPa to 1019 hPa
+                      throughout the day. A sudden drop around noon (~12:00) may
+                      indicate a change in the weather system. This pressure
+                      drop can signal an increase in cloud cover and a higher
+                      chance of precipitation. As the temperature drops again in
+                      the evening, condensation events may increase due to
+                      values approaching the dew point temperature. This
+                      situation may lead to reduced visibility, lower cloud
+                      ceilings, and an increased chance of precipitation during
+                      the night.{" "}
+                    </p>{" "}
+                    <h5>✈️ Aviation Effects</h5>{" "}
+                    <p>
+                      {" "}
+                      In the morning, reduced visibility may occur due to
+                      low-level cloud cover. The pressure drop may be linked to
+                      an approaching weather system or increasing humidity. In
+                      the evening, with the temperature dropping, a lower cloud
+                      ceiling and reduced visibility should be expected.{" "}
+                    </p>{" "}
                   </>
                 ) : (
                   <>
-                    Throughout the day, temperatures remained below freezing
-                    (~-2°C to -4°C), with dew point temperatures closely
-                    matching air temperature, indicating high humidity and a
-                    potential risk of{" "}
-                    <span className="text-red-700">
-                      fog or icing conditions
-                    </span>
-                    . The stable high-pressure system (1024-1028 hPa) suggests
-                    relatively calm weather with no significant frontal
-                    activity, but persistent cold conditions could have required
-                    de-icing procedures for aircraft operations.
+                    <p>
+                      {" "}
+                      METAR data indicates that the difference between
+                      temperature and dew point temperature remained
+                      consistently stable throughout the day. While the
+                      temperature stayed around -2°C, the dew point fluctuated
+                      between -4°C and -6°C. This suggests that there was
+                      constant humidity in the air, but it was not sufficient
+                      for fog formation. While ERA5 data presents a humidity
+                      profile that increases the likelihood of fog, METAR data
+                      shows that due to the maintained difference between
+                      temperature and dew point,{" "}
+                      <span className="text-red-700">
+                        low-level clouds (BKN)
+                      </span>{" "}
+                      were more dominant instead of fog.{" "}
+                    </p>{" "}
+                    <p>
+                      {" "}
+                      When examining pressure data, fluctuations between 1024
+                      and 1028 hPa were observed throughout the day. A pressure
+                      drop was detected in the afternoon and evening, indicating
+                      a possible change in the air mass. These pressure
+                      fluctuations can affect aircraft altimeter settings and
+                      flight performance.{" "}
+                    </p>{" "}
                   </>
                 )}
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -322,7 +367,7 @@ const MeteogramPage = () => {
               />
               <button
                 onClick={() => setShowPrecipitationInfo(!showPrecipitationInfo)}
-                className="text-sm sm:text-base font-medium px-3 sm:px-4 py-2 mt-2 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+                className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
               >
                 {showPrecipitationInfo
                   ? "Show Less Information"
@@ -332,19 +377,41 @@ const MeteogramPage = () => {
               <div
                 className={`overflow-hidden transition-all duration-500 ease-in-out ${
                   showPrecipitationInfo
-                    ? "max-h-[200px] opacity-100"
+                    ? "max-h-[1000px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                  The precipitation data shows intermittent light rainfall
-                  throughout the day. The highest recorded amount is around 0.1
-                  mm, which is not significant enough to cause major operational
-                  disruptions. However, light rain may slightly wet the runway
-                  surface, potentially affecting braking action. The increase in
-                  precipitation during the evening hours should be monitored for
-                  possible changes in runway conditions.
-                </p>
+                <div className="text-start text-sm text-gray-600 mt-2 leading-relaxed">
+                  {" "}
+                  <p>
+                    {" "}
+                    During the night (00:00 - 06:00), the amount of
+                    precipitation is very low, and no significant rainfall is
+                    expected. Starting from the morning hours (06:00 - 12:00),
+                    the precipitation amount begins to increase, reaching its
+                    highest level around 09:00 (~0.1 mm). Considering that the
+                    temperature is close to 0°C at this time, there is a high
+                    chance of mixed rain and snow or light snowfall.{" "}
+                  </p>{" "}
+                  <p>
+                    {" "}
+                    In the afternoon, the precipitation decreases slightly but
+                    continues, and it increases again towards the evening
+                    (~21:00). Since the temperature drops again during this
+                    period, the precipitation may turn into snow once more.{" "}
+                  </p>{" "}
+                  <h5>✈️ Aviation Effects</h5>{" "}
+                  <p>
+                    {" "}
+                    The morning precipitation may cause icing on the runway
+                    surface. Although the precipitation decreases in the
+                    afternoon, it still continues, which may lead to water
+                    accumulation on the runway or a slippery surface due to
+                    melting snow. In the evening, the increasing precipitation
+                    and decreasing temperature may bring the risk of snowfall,
+                    possibly causing accumulation on the runway.{" "}
+                  </p>{" "}
+                </div>
               </div>
             </div>
           </div>
@@ -380,7 +447,7 @@ const MeteogramPage = () => {
               />
               <button
                 onClick={() => setShowPrecipitationInfo(!showPrecipitationInfo)}
-                className="text-sm sm:text-base font-medium px-3 sm:px-4 py-2 mt-2 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+                className="text-start text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
               >
                 {showPrecipitationInfo
                   ? "Show Less Information"
@@ -388,25 +455,34 @@ const MeteogramPage = () => {
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                className={`overflow-hidden transition-all duration-500 ease-in-out text-start text-sm text-gray-600 ${
                   showPrecipitationInfo
-                    ? "max-h-[200px] opacity-100"
+                    ? "max-h-[1000px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                  The METAR reports indicate continuous snowfall (❄) throughout
-                  the day, with a brief rain-snow mix around 12:00 UTC, possibly
-                  due to temporary warming at certain altitudes. Prolonged
-                  snowfall posed challenges for runway operations, potentially
-                  reducing braking action and requiring frequent de-icing and
-                  snow removal efforts. The low visibility associated with
-                  snowfall likely necessitated the use of instrument approaches
-                  (ILS) for safe landings. Additionally, snowfall and mixed
-                  precipitation can significantly reduce visibility, affecting
-                  approach procedures and increasing operational risks, even
-                  though visibility data is not directly available in this
-                  graph.
+                <p>
+                  METAR data indicates that periodic light snow showers (-SHSN)
+                  were observed between 09:00 and 16:00, along with a brief
+                  period of light rain showers (-SHRA) around noon (12:00 -
+                  13:00). In ERA5 temperature data, the 0°C isotherm was briefly
+                  exceeded during midday, supporting the rain event reported in
+                  METAR.
+                </p>
+                <p>
+                  From an aviation operations perspective, the ongoing snow
+                  showers from the morning can cause accumulation and
+                  slipperiness on the runway surface, potentially affecting
+                  braking distances. The light rain showers observed around noon
+                  may partially melt the snow on the runway, increasing{" "}
+                  <span className="text-red-700">the risk of refreezing</span>{" "}
+                  when temperatures drop again. This raises the possibility of
+                  ice formation on the runway, creating a critical factor for
+                  takeoff and landing operations. In the afternoon and evening,
+                  the resumption of snow showers may further reduce{" "}
+                  <span className="text-red-700">
+                    runway friction and decrease visibility.
+                  </span>
                 </p>
               </div>
             </div>
@@ -447,10 +523,12 @@ const MeteogramPage = () => {
 
             <div
               className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                showWindInfo ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                showWindInfo
+                  ? "max-h-[1000px] opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
             >
-              <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+              <p className="text-start text-sm text-gray-600 mt-2 leading-relaxed">
                 {useERA5 ? (
                   <>
                     The wind starts at approximately 20 knots around midnight
@@ -469,16 +547,25 @@ const MeteogramPage = () => {
                   </>
                 ) : (
                   <>
-                    Wind conditions showed strong winds (~22-25 knots) in the
-                    early morning hours, gradually decreasing to 10-15 knots
-                    later in the day. Wind direction remained mostly from the
-                    west-northwest (WNW). The stronger winds in the early hours
-                    may have caused{" "}
-                    <span className="text-red-700">
-                      moderate turbulence on approach and departure
-                    </span>
-                    , while the later reduction in wind speed provided more
-                    favorable conditions for landing.
+                    <p>
+                      {" "}
+                      According to METAR data, wind speed increased to 25 kt
+                      during the night and then gradually decreased throughout
+                      the day, fluctuating between 15-18 kt. While ERA5 data
+                      predicted lower wind speeds at night, METAR data indicates
+                      that stronger winds were present during these hours.{" "}
+                    </p>{" "}
+                    <p>
+                      {" "}
+                      In the evening (~after 21:00), wind speed was observed to
+                      increase again. This increase may be related to changes in
+                      the air mass and has the potential to create{" "}
+                      <span className="text-red-700">
+                        turbulence at ground level
+                      </span>
+                      . While ERA5 data predicted more stable winds during the
+                      night, METAR data showed more variability.{" "}
+                    </p>
                   </>
                 )}
               </p>
