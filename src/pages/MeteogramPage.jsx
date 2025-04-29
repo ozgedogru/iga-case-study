@@ -256,7 +256,7 @@ const MeteogramPage = () => {
             />
             <button
               onClick={() => setShowTempInfo(!showTempInfo)}
-              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out text-sky-700 hover:underline"
             >
               {showTempInfo ? "Show Less Information" : "Show More Information"}
             </button>
@@ -367,7 +367,7 @@ const MeteogramPage = () => {
               />
               <button
                 onClick={() => setShowPrecipitationInfo(!showPrecipitationInfo)}
-                className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+                className="text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out text-sky-700 hover:underline"
               >
                 {showPrecipitationInfo
                   ? "Show Less Information"
@@ -447,7 +447,7 @@ const MeteogramPage = () => {
               />
               <button
                 onClick={() => setShowPrecipitationInfo(!showPrecipitationInfo)}
-                className="text-start text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+                className="text-start text-sm sm:text-base font-medium px-3 sm:px-4 py-1 rounded-md transition-all duration-300 ease-in-out text-sky-700 hover:underline"
               >
                 {showPrecipitationInfo
                   ? "Show Less Information"
@@ -516,7 +516,7 @@ const MeteogramPage = () => {
             />
             <button
               onClick={() => setShowWindInfo(!showWindInfo)}
-              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-2 mt-2 rounded-md transition-all duration-300 ease-in-out hover:text-sky-700"
+              className="text-sm sm:text-base font-medium px-3 sm:px-4 py-2 mt-2 rounded-md transition-all duration-300 ease-in-out text-sky-700 hover:underline"
             >
               {showWindInfo ? "Show Less Information" : "Show More Information"}
             </button>
